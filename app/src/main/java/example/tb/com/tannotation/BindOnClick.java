@@ -1,48 +1,21 @@
 package example.tb.com.tannotation;
 
-import android.app.Activity;
-import android.view.View;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import android.view.View;
 
 /**
  * @auther tb
- * @time 2018/3/22 下午3:19
- * @desc
+ * @time 2018/3/21 上午11:47
+ * @desc view的点击事件
  */
-public class BindOnClick {
-    public static void bindOnClick(final Activity obj) {
-        Class<?> cls = obj.getClass();
-        //获取当前Activity的所有方法，包括私有
-        Method methods[] = cls.getDeclaredMethods();
-        for (int i = 0; i < methods.length; i++) {
-            final Method method = methods[i];
-            if (method.isAnnotationPresent(OnClick.class)) {
-                // 得到这个类的OnClick注解
-                OnClick mOnClick = (OnClick) method.getAnnotation(OnClick.class);
-                // 得到注解的值
-                int[] id = mOnClick.value();
-                for (int j = 0; j < id.length; j++) {
-                    final View view = obj.findViewById(id[j]);
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //反射指定的点击方法
-                            try {
-                                //私有方法需要设置true才能访问
-                                method.setAccessible(true);
-                                method.invoke(obj, view);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }
-        }
-    }
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+//这个是为了采用动态代理实现注解注入
+@EventBase(listenerType = View.OnClickListener.class, listenerSetter = "setOnClickListener", methodName = "onClick")
+public @interface BindOnClick {
+    int[] value();
 }

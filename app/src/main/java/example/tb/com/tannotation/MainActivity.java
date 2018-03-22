@@ -1,9 +1,7 @@
 package example.tb.com.tannotation;
 
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,11 +16,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BindIdApi.bindId2(this);
-        BindOnClick.bindOnClick(this);
+        BindOnClickApi.bindOnClick(this);
         tv.setText("this is a test~");
     }
     
-    @OnClick(R.id.tv)
+    @BindOnClick(R.id.tv)
     private void click(View view){
         switch (view.getId()){
             case R.id.tv:
