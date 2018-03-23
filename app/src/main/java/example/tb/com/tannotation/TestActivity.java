@@ -3,6 +3,7 @@ package example.tb.com.tannotation;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 /**
  * @auther tb
@@ -10,6 +11,9 @@ import android.support.annotation.Nullable;
  * @desc
  */
 public class TestActivity extends Activity {
+    
+    TextView tv;
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
