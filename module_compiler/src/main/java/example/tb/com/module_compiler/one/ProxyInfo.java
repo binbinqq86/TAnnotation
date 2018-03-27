@@ -1,4 +1,4 @@
-package example.tb.com.module_compiler;
+package example.tb.com.module_compiler.one;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class ProxyInfo {
     public Map<Integer, VariableElement> mInjectElements = new HashMap<Integer, VariableElement>();
     
     /**
-     * 采用此种方式不能被混淆，或者采用字符串方式
+     * 采用类名方式不能被混淆，或者采用字符串方式
      */
     public static final String PROXY = "TA";
     public static final String ClassSuffix = "_" + PROXY;
@@ -48,7 +48,7 @@ public class ProxyInfo {
         builder.append("import android.support.annotation.Keep;\n");
         builder.append('\n');
         
-        builder.append("@Keep").append("\n");//禁止混淆，否则反射的时候找不到该类
+//        builder.append("@Keep").append("\n");//禁止混淆，否则反射的时候找不到该类
         builder.append("public class ").append(getClassName()).append(" implements " + ProxyInfo.PROXY + "<" + typeElement.getQualifiedName() + ">");
         builder.append(" {\n");
         
@@ -72,13 +72,14 @@ public class ProxyInfo {
             String name = variableElement.getSimpleName().toString();
             String type = variableElement.asType().toString();
             
-            builder.append(" if(object instanceof android.app.Activity)");
+            //这里object如果不为空，则可以传入view等对象
+            builder.append(" if(object instanceof android.view.View)");
             builder.append("\n{\n");
             builder.append("host." + name).append(" = ");
-            builder.append("(" + type + ")(((android.app.Activity)object).findViewById(" + id + "));");
+            builder.append("(" + type + ")((android.view.View)object).findViewById(" + id + ");");
             builder.append("\n}\n").append("else").append("\n{\n");
             builder.append("host." + name).append(" = ");
-            builder.append("(" + type + ")(((android.view.View)object).findViewById(" + id + "));");
+            builder.append("(" + type + ")host.findViewById(" + id + ");");
             builder.append("\n}\n");
         }
         

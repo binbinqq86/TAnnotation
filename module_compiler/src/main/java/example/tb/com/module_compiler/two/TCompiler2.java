@@ -1,4 +1,4 @@
-package example.tb.com.module_compiler;
+package example.tb.com.module_compiler.two;
 
 import com.google.auto.service.AutoService;
 
@@ -27,14 +27,14 @@ import example.tb.com.module_annotation.FindId;
 @AutoService(Processor.class)
 //@SupportedSourceVersion(SourceVersion.RELEASE_8)//也可以采用下面的写法
 //@SupportedAnnotationTypes({"FindId"})//此写法混淆的时候需要保留FindId类
-public class TCompiler extends AbstractProcessor {
+public class TCompiler2 extends AbstractProcessor {
     private Filer mFileUtils;
     private Elements mElementUtils;
     private Messager messager;
     /**
      * 一个需要生成的类的集合（key为类的全名，value为该类所有相关的需要的信息）
      */
-    private Map<String, ProxyInfo> mProxyMap = new HashMap<String, ProxyInfo>();
+    private Map<String, ProxyInfo2> mProxyMap = new HashMap<String, ProxyInfo2>();
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -68,7 +68,7 @@ public class TCompiler extends AbstractProcessor {
      */
     private void generateClass() {
         for (String key : mProxyMap.keySet()) {
-            ProxyInfo proxyInfo = mProxyMap.get(key);
+            ProxyInfo2 proxyInfo = mProxyMap.get(key);
             JavaFileObject sourceFile = null;
             try {
                 sourceFile = mFileUtils.createSourceFile(proxyInfo.getProxyClassFullName(), proxyInfo.typeElement);
@@ -106,9 +106,9 @@ public class TCompiler extends AbstractProcessor {
                 /*获取包名*/
                 String packageName = mElementUtils.getPackageOf(typeElement).getQualifiedName().toString();
                 
-                ProxyInfo proxyInfo = mProxyMap.get(qualifiedName);
+                ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
                 if (proxyInfo == null) {
-                    proxyInfo = new ProxyInfo();
+                    proxyInfo = new ProxyInfo2();
                     mProxyMap.put(qualifiedName, proxyInfo);
                 }
                 
@@ -121,9 +121,9 @@ public class TCompiler extends AbstractProcessor {
                 TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();//TypeElement
                 String qualifiedName = typeElement.getQualifiedName().toString();
                 
-                ProxyInfo proxyInfo = mProxyMap.get(qualifiedName);
+                ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
                 if (proxyInfo == null) {
-                    proxyInfo = new ProxyInfo();
+                    proxyInfo = new ProxyInfo2();
                     mProxyMap.put(qualifiedName, proxyInfo);
                 }
                 proxyInfo.mInjectElements.put(value, variableElement);

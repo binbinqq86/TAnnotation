@@ -110,10 +110,10 @@
 # keep annotated by NoProguard
 ##手动启用support NoProguard注解（必须开启allowobfuscation，保证该注解生效）
 #-keep,allowobfuscation @interface com.tb.annotation.annotation.NoProguard
--keep class example.tb.com.tannotation.NoProguard
--keep @example.tb.com.tannotation.NoProguard class * { *;}
+-keep class example.tb.com.module_annotation.NoProguard
+-keep @example.tb.com.module_annotation.NoProguard class * { *;}
 -keepclassmembers class * {
-    @example.tb.com.tannotation.NoProguard *;
+    @example.tb.com.module_annotation.NoProguard *;
 }
 #3.使用系统提供的
 #手动启用support keep注解
