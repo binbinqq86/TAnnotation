@@ -17,13 +17,11 @@ public class TAHelper {
     
     public static void inject(Activity host, Object root) {
         String classFullName = host.getClass().getName() + ProxyInfo.ClassSuffix;
-        Toast.makeText(host.getApplicationContext(),classFullName,Toast.LENGTH_LONG).show();
         try {
             Class proxy = Class.forName(classFullName);
             TA injector = (TA) proxy.newInstance();
             injector.inject(host, root);
         } catch (Exception e) {
-            Toast.makeText(host.getApplicationContext(),"error",Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }

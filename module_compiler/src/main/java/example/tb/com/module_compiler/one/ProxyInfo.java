@@ -48,7 +48,7 @@ public class ProxyInfo {
         builder.append("import android.support.annotation.Keep;\n");
         builder.append('\n');
         
-//        builder.append("@Keep").append("\n");//禁止混淆，否则反射的时候找不到该类
+        builder.append("@Keep").append("\n");//禁止混淆，否则被当作无用代码优化掉，反射的时候找不到该类
         builder.append("public class ").append(getClassName()).append(" implements " + ProxyInfo.PROXY + "<" + typeElement.getQualifiedName() + ">");
         builder.append(" {\n");
         
