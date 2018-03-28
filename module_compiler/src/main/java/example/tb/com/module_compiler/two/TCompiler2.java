@@ -23,6 +23,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 
 import example.tb.com.module_annotation.FindId;
+import example.tb.com.module_compiler.one.ProxyInfo;
 
 @AutoService(Processor.class)
 //@SupportedSourceVersion(SourceVersion.RELEASE_8)//也可以采用下面的写法

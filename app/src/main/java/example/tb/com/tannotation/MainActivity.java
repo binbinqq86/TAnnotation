@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()){
             case R.id.tv:
                 startActivity(new Intent(MainActivity.this,TestActivity.class));
-                Toast.makeText(this,tv.getText().toString(),Toast.LENGTH_LONG).show();
+//                Toast.makeText(this,tv.getText().toString(),Toast.LENGTH_LONG).show();
                 break;
         }
     }

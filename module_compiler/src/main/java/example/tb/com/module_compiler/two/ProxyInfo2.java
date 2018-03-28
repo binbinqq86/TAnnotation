@@ -27,7 +27,7 @@ public class ProxyInfo2 {
     public Map<Integer, VariableElement> mInjectElements = new HashMap<Integer, VariableElement>();
     
     /**
-     * 采用此种方式不能被混淆，或者采用字符串方式
+     * 采用类名方式不能被混淆(否则编译阶段跟运行阶段，该字符串会不一样)，或者采用字符串方式
      */
     public static final String PROXY = "TA";
     public static final String ClassSuffix = "_" + PROXY;
@@ -49,7 +49,7 @@ public class ProxyInfo2 {
         builder.append('\n');
         
         builder.append("@Keep").append("\n");//禁止混淆，否则反射的时候找不到该类
-        builder.append("public class ").append(getClassName()).append(" implements " + ProxyInfo2.PROXY + "<" + typeElement.getQualifiedName() + ">");
+        builder.append("public class ").append(getClassName());
         builder.append(" {\n");
         
         generateMethod(builder);
@@ -61,8 +61,7 @@ public class ProxyInfo2 {
     }
     
     private void generateMethod(StringBuilder builder) {
-        builder.append("@Override\n ");
-        builder.append("public void inject(" + typeElement.getQualifiedName() + " host, Object object ) {\n");
+        builder.append("public " + getClassName() + "(" + typeElement.getQualifiedName() + " host, android.view.View object) {\n");
         
         if (value > 0) {
             builder.append("host.setContentView(" + value + ");\n");
@@ -73,14 +72,8 @@ public class ProxyInfo2 {
             String type = variableElement.asType().toString();
             
             //这里object如果不为空，则可以传入view等对象
-            builder.append(" if(object instanceof android.view.View)");
-            builder.append("\n{\n");
             builder.append("host." + name).append(" = ");
-            builder.append("(" + type + ")((android.view.View)object).findViewById(" + id + ");");
-            builder.append("\n}\n").append("else").append("\n{\n");
-            builder.append("host." + name).append(" = ");
-            builder.append("(" + type + ")host.findViewById(" + id + ");");
-            builder.append("\n}\n");
+            builder.append("(" + type + ")object.findViewById(" + id + ");");
         }
         
         builder.append("  }\n");

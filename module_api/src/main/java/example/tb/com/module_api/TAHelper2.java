@@ -1,5 +1,10 @@
 package example.tb.com.module_api;
 
+import android.app.Activity;
+import android.view.View;
+
+import java.lang.reflect.Constructor;
+
 import example.tb.com.module_compiler.one.ProxyInfo;
 
 /**
@@ -8,16 +13,17 @@ import example.tb.com.module_compiler.one.ProxyInfo;
  * @desc 实现帮助注入的类
  */
 public class TAHelper2 {
-    public static void inject(Object o) {
-        inject(o, o);
+    public static void inject(Activity o) {
+        inject(o, o.getWindow().getDecorView());
     }
     
-    public static void inject(Object host, Object root) {
+    public static void inject(Activity host, View root) {
         String classFullName = host.getClass().getName() + ProxyInfo.ClassSuffix;
         try {
             Class proxy = Class.forName(classFullName);
-            TA injector = (TA) proxy.newInstance();
-            injector.inject(host, root);
+            Constructor constructor=proxy.getDeclaredConstructor(host.getClass(),View.class);
+            constructor.setAccessible(true);
+            constructor.newInstance(host,root);
         } catch (Exception e) {
             e.printStackTrace();
         }

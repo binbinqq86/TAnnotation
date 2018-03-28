@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import example.tb.com.module_annotation.FindId;
 import example.tb.com.module_api.TAHelper;
+import example.tb.com.module_api.TAHelper2;
 
 /**
  * @auther tb
@@ -21,7 +22,8 @@ public class TestActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TAHelper.inject(this);
+//        TAHelper.inject(this);
+        TAHelper2.inject(this);
         if(tv!=null){
             tv.setText("hahaha,how are you?");
         }

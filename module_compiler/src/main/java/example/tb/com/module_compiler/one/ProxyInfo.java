@@ -27,7 +27,7 @@ public class ProxyInfo {
     public Map<Integer, VariableElement> mInjectElements = new HashMap<Integer, VariableElement>();
     
     /**
-     * 采用类名方式不能被混淆，或者采用字符串方式
+     * 采用类名方式不能被混淆(否则编译阶段跟运行阶段，该字符串会不一样)，或者采用字符串方式
      */
     public static final String PROXY = "TA";
     public static final String ClassSuffix = "_" + PROXY;
