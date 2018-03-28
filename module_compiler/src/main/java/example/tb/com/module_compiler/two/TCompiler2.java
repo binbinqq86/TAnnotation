@@ -17,13 +17,15 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 
 import example.tb.com.module_annotation.FindId;
-import example.tb.com.module_compiler.one.ProxyInfo;
+import example.tb.com.module_annotation.OnClick;
 
 @AutoService(Processor.class)
 //@SupportedSourceVersion(SourceVersion.RELEASE_8)//也可以采用下面的写法
@@ -95,10 +97,9 @@ public class TCompiler2 extends AbstractProcessor {
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(FindId.class);
         //收集信息
         for (Element element : elements) {
-            //获取注解的值
-            int value = element.getAnnotation(FindId.class).value();
             if (element.getKind().isClass()) {
-                //处理类注解
+                //获取注解的值
+    
                 TypeElement typeElement = (TypeElement) element;
                 //类的完整路径
                 String qualifiedName = typeElement.getQualifiedName().toString();
@@ -106,29 +107,56 @@ public class TCompiler2 extends AbstractProcessor {
                 String clsName = typeElement.getSimpleName().toString();
                 /*获取包名*/
                 String packageName = mElementUtils.getPackageOf(typeElement).getQualifiedName().toString();
-                
-                ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
-                if (proxyInfo == null) {
-                    proxyInfo = new ProxyInfo2();
-                    mProxyMap.put(qualifiedName, proxyInfo);
+    
+                FindId findId=element.getAnnotation(FindId.class);
+                if(findId!=null){
+                    int value = findId.value();
+                    //处理类注解
+                    ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
+                    if (proxyInfo == null) {
+                        proxyInfo = new ProxyInfo2();
+                        mProxyMap.put(qualifiedName, proxyInfo);
+                    }
+    
+                    proxyInfo.value = value;
+                    proxyInfo.typeElement = typeElement;
+                    proxyInfo.packageName = packageName;
                 }
-                
-                proxyInfo.value = value;
-                proxyInfo.typeElement = typeElement;
-                proxyInfo.packageName = packageName;
             } else if (element.getKind().isField()) {
-                //处理成员变量注解
-                VariableElement variableElement = (VariableElement) element;
-                TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();//TypeElement
-                String qualifiedName = typeElement.getQualifiedName().toString();
-                
-                ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
-                if (proxyInfo == null) {
-                    proxyInfo = new ProxyInfo2();
-                    mProxyMap.put(qualifiedName, proxyInfo);
+                //获取注解的值
+                FindId findId=element.getAnnotation(FindId.class);
+                if(findId!=null){
+                    int value = findId.value();
+                    //处理成员变量注解
+                    VariableElement variableElement = (VariableElement) element;
+                    TypeElement typeElement = (TypeElement) variableElement.getEnclosingElement();//TypeElement
+                    String qualifiedName = typeElement.getQualifiedName().toString();
+                    ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
+                    if (proxyInfo == null) {
+                        proxyInfo = new ProxyInfo2();
+                        mProxyMap.put(qualifiedName, proxyInfo);
+                    }
+                    proxyInfo.mInjectElements.put(value, variableElement);
                 }
-                proxyInfo.mInjectElements.put(value, variableElement);
-            } else {
+            } else if(element.getKind()== ElementKind.METHOD){
+                //获取注解的值
+                OnClick onClick=element.getAnnotation(OnClick.class);
+                if(onClick!=null){
+                    int[] value = onClick.value();
+                    if(value!=null&&value.length>0){
+                        for (int i = 0; i < value.length; i++) {
+                            ExecutableElement executableElement= (ExecutableElement) element;
+                            String qualifiedName=((TypeElement)element).getQualifiedName().toString();
+                            ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
+                            if (proxyInfo == null) {
+                                proxyInfo = new ProxyInfo2();
+                                mProxyMap.put(qualifiedName, proxyInfo);
+                            }
+                            proxyInfo.mInjectMethods.put(value[i], executableElement);
+                        }
+                    }
+                }
+            }else{
                 continue;
             }
         }

@@ -27,6 +27,7 @@ import example.tb.com.module_annotation.FindId;
 //@AutoService(Processor.class)
 //@SupportedSourceVersion(SourceVersion.RELEASE_8)//也可以采用下面的写法
 //@SupportedAnnotationTypes({"FindId"})//此写法混淆的时候需要保留FindId类
+@Deprecated
 public class TCompiler extends AbstractProcessor {
     private Filer mFileUtils;
     private Elements mElementUtils;

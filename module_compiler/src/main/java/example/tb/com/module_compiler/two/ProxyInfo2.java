@@ -3,6 +3,7 @@ package example.tb.com.module_compiler.two;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
@@ -24,7 +25,9 @@ public class ProxyInfo2 {
     /**
      * key为id，也就是成员变量注解的值，value为对应的成员变量
      */
-    public Map<Integer, VariableElement> mInjectElements = new HashMap<Integer, VariableElement>();
+    public Map<Integer, VariableElement> mInjectElements = new HashMap<>();
+    
+    public Map<Integer, ExecutableElement> mInjectMethods = new HashMap<>();
     
     /**
      * 采用类名方式不能被混淆(否则编译阶段跟运行阶段，该字符串会不一样)，或者采用字符串方式
@@ -76,7 +79,21 @@ public class ProxyInfo2 {
             builder.append("(" + type + ")object.findViewById(" + id + ");");
         }
         
-        builder.append("  }\n");
+        builder.append("/**hahaha"+mInjectMethods.keySet().size()+"*/");
+        for (int id : mInjectMethods.keySet()) {
+            builder.append("//wuwuwu");
+            ExecutableElement executableElement = mInjectMethods.get(id);
+            VariableElement variableElement = mInjectElements.get(id);
+            String name = variableElement.getSimpleName().toString();
+            builder.append("host." + name + ".setOnClickListener(new android.view.View.OnClickListener(){\n");
+            builder.append("@Override\n");
+            builder.append("public void onClick(android.view.View v) {\n");
+            builder.append(executableElement.getSimpleName().toString() + "(android.view.View v)");
+            builder.append("}\n");
+            builder.append("});\n");
+        }
+        
+        builder.append("  \n}\n");
     }
     
 }
