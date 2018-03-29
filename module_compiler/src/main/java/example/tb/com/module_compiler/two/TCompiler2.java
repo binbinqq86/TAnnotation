@@ -82,7 +82,7 @@ public class TCompiler2 extends AbstractProcessor {
                 writer.flush();
                 writer.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                error(proxyInfo.typeElement, "===tb===%s", e.getMessage());
             }
         }
     }
@@ -99,7 +99,7 @@ public class TCompiler2 extends AbstractProcessor {
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(FindId.class);
         //收集信息
         for (Element element : elements) {
-            if (element.getKind().isClass()) {
+            if (element.getKind() == ElementKind.CLASS) {
                 //获取注解的值
                 TypeElement typeElement = (TypeElement) element;
                 //类的完整路径
@@ -123,7 +123,7 @@ public class TCompiler2 extends AbstractProcessor {
                     proxyInfo.typeElement = typeElement;
                     proxyInfo.packageName = packageName;
                 }
-            } else if (element.getKind().isField()) {
+            } else if (element.getKind() == ElementKind.FIELD) {
                 //获取注解的值
                 FindId findId = element.getAnnotation(FindId.class);
                 if (findId != null) {
