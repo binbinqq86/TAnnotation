@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * @desc
  */
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 public @interface OnClick {
     int[] value();
 }

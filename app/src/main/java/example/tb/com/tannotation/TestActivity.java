@@ -34,7 +34,7 @@ public class TestActivity extends Activity {
     }
     
     @OnClick({R.id.tv})
-    private void clickTest(View view){
+    void clickTest(View view){
         switch (view.getId()){
             case R.id.tv:
                 Toast.makeText(TestActivity.this,"test click",Toast.LENGTH_LONG).show();

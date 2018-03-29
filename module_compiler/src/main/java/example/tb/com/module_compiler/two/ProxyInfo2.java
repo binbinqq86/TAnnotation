@@ -49,6 +49,8 @@ public class ProxyInfo2 {
         builder.append("package ").append(packageName).append(";\n\n");
         builder.append("import example.tb.com.module_api.*;\n");
         builder.append("import android.support.annotation.Keep;\n");
+        builder.append("import android.view.View;\n");
+        builder.append("import " + typeElement.getQualifiedName() + ";\n");
         builder.append('\n');
         
         builder.append("@Keep").append("\n");//禁止混淆，否则反射的时候找不到该类
@@ -57,17 +59,15 @@ public class ProxyInfo2 {
         
         generateMethod(builder);
         
-        builder.append('\n');
-        
         builder.append("}\n");
         return builder.toString();
     }
     
     private void generateMethod(StringBuilder builder) {
-        builder.append("public " + getClassName() + "(" + typeElement.getQualifiedName() + " host, android.view.View object) {\n");
+        builder.append("    public " + getClassName() + "(final " + typeElement.getSimpleName() + " host, View object) {\n");
         
         if (value > 0) {
-            builder.append("host.setContentView(" + value + ");\n");
+            builder.append("        host.setContentView(" + value + ");\n");
         }
         for (int id : mInjectElements.keySet()) {
             VariableElement variableElement = mInjectElements.get(id);
@@ -75,25 +75,23 @@ public class ProxyInfo2 {
             String type = variableElement.asType().toString();
             
             //这里object如果不为空，则可以传入view等对象
-            builder.append("host." + name).append(" = ");
-            builder.append("(" + type + ")object.findViewById(" + id + ");");
+            builder.append("        host." + name).append(" = ");
+            builder.append("(" + type + ")object.findViewById(" + id + ");\n");
         }
         
-        builder.append("/**hahaha"+mInjectMethods.keySet().size()+"*/");
         for (int id : mInjectMethods.keySet()) {
-            builder.append("//wuwuwu");
             ExecutableElement executableElement = mInjectMethods.get(id);
             VariableElement variableElement = mInjectElements.get(id);
             String name = variableElement.getSimpleName().toString();
-            builder.append("host." + name + ".setOnClickListener(new android.view.View.OnClickListener(){\n");
-            builder.append("@Override\n");
-            builder.append("public void onClick(android.view.View v) {\n");
-            builder.append(executableElement.getSimpleName().toString() + "(android.view.View v)");
-            builder.append("}\n");
-            builder.append("});\n");
+            builder.append("        host." + name + ".setOnClickListener(new View.OnClickListener(){\n");
+            builder.append("            @Override\n");
+            builder.append("            public void onClick(View v) {\n");
+            builder.append("                host." + executableElement.getSimpleName().toString() + "(host." + name + ");\n");
+            builder.append("            }\n");
+            builder.append("        });\n");
         }
         
-        builder.append("  \n}\n");
+        builder.append("    }\n");
     }
     
 }
