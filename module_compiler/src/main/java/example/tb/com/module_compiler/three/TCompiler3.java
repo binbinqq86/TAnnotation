@@ -1,4 +1,4 @@
-package example.tb.com.module_compiler.two;
+package example.tb.com.module_compiler.three;
 
 import com.google.auto.service.AutoService;
 
@@ -28,17 +28,17 @@ import javax.tools.JavaFileObject;
 import example.tb.com.module_annotation.FindId;
 import example.tb.com.module_annotation.OnClick;
 
-//@AutoService(Processor.class)
+@AutoService(Processor.class)
 //@SupportedSourceVersion(SourceVersion.RELEASE_8)//也可以采用下面的写法
 //@SupportedAnnotationTypes({"FindId"})//此写法混淆的时候需要保留FindId类
-public class TCompiler2 extends AbstractProcessor {
+public class TCompiler3 extends AbstractProcessor {
     private Filer mFileUtils;
     private Elements mElementUtils;
     private Messager messager;
     /**
      * 一个需要生成的类的集合（key为类的全名，value为该类所有相关的需要的信息）
      */
-    private Map<String, ProxyInfo2> mProxyMap = new HashMap<String, ProxyInfo2>();
+    private Map<String, ProxyInfo3> mProxyMap = new HashMap<String, ProxyInfo3>();
     
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -73,7 +73,7 @@ public class TCompiler2 extends AbstractProcessor {
      */
     private void generateClass() {
         for (String key : mProxyMap.keySet()) {
-            ProxyInfo2 proxyInfo = mProxyMap.get(key);
+            ProxyInfo3 proxyInfo = mProxyMap.get(key);
             JavaFileObject sourceFile = null;
             try {
                 sourceFile = mFileUtils.createSourceFile(proxyInfo.getProxyClassFullName(), proxyInfo.typeElement);
@@ -113,9 +113,9 @@ public class TCompiler2 extends AbstractProcessor {
                 if (findId != null) {
                     int value = findId.value();
                     //处理类注解
-                    ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
+                    ProxyInfo3 proxyInfo = mProxyMap.get(qualifiedName);
                     if (proxyInfo == null) {
-                        proxyInfo = new ProxyInfo2();
+                        proxyInfo = new ProxyInfo3();
                         mProxyMap.put(qualifiedName, proxyInfo);
                     }
                     
@@ -132,9 +132,9 @@ public class TCompiler2 extends AbstractProcessor {
                     VariableElement variableElement = (VariableElement) element;
                     //这里先要获取上层封装类型，然后强转为TypeElement
                     String qualifiedName = ((TypeElement) element.getEnclosingElement()).getQualifiedName().toString();
-                    ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
+                    ProxyInfo3 proxyInfo = mProxyMap.get(qualifiedName);
                     if (proxyInfo == null) {
-                        proxyInfo = new ProxyInfo2();
+                        proxyInfo = new ProxyInfo3();
                         mProxyMap.put(qualifiedName, proxyInfo);
                     }
                     proxyInfo.mInjectElements.put(value, variableElement);
@@ -156,9 +156,9 @@ public class TCompiler2 extends AbstractProcessor {
                             ExecutableElement executableElement = (ExecutableElement) element;
                             //这里先要获取上层封装类型，然后强转为TypeElement
                             String qualifiedName = ((TypeElement) element.getEnclosingElement()).getQualifiedName().toString();
-                            ProxyInfo2 proxyInfo = mProxyMap.get(qualifiedName);
+                            ProxyInfo3 proxyInfo = mProxyMap.get(qualifiedName);
                             if (proxyInfo == null) {
-                                proxyInfo = new ProxyInfo2();
+                                proxyInfo = new ProxyInfo3();
                                 mProxyMap.put(qualifiedName, proxyInfo);
                             }
                             proxyInfo.mInjectMethods.put(value[i], executableElement);
